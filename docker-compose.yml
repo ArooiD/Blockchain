@@ -6,20 +6,64 @@ services:
       context: ./Client
       dockerfile: Dockerfile
     ports:
-      - "${CLIENT_PORT}:8080"
+      - "${CLIENT_PORT}:${CLIENT_PORT}"
+    env_file:
+      - .env
+    networks:
+      - app-network
+
   server:
     image: ru/mirea/blockchain/server
     container_name: server
     build:
-      context: ./Client
+      context: ./Server
       dockerfile: Dockerfile
     ports:
-      - "${SERVER_PORT}:8080"
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    env_file:
+      - .env
+    networks:
+      - app-network
+
   miner:
     image: ru/mirea/blockchain/miner
     container_name: miner
     build:
-      context: ./Client
+      context: ./Miner
       dockerfile: Dockerfile
     ports:
-      - "${MINER_PORT}:8080"
+      - "${MINER_PORT}:${MINER_PORT}"
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - app-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+    ports:
+      - "9092:9092"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
