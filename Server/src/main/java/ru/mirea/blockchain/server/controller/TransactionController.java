@@ -21,7 +21,7 @@ public class TransactionController {
      * @param transaction тело сообщения
      * @return Mono<ResponseEntity<Void>>
      */
-    @PostMapping("transactions")
+    @PostMapping("transaction")
     public Mono<Boolean> sendTransaction(
             @RequestBody TransactionDTO transaction) {
         return transactionService.sendMessage("transaction", transaction);
