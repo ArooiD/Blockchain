@@ -1,0 +1,25 @@
+services:
+  client:
+    image: ru/mirea/blockchain/client
+    container_name: client
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+    ports:
+      - "${CLIENT_PORT}:8080"
+  server:
+    image: ru/mirea/blockchain/server
+    container_name: server
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+    ports:
+      - "${SERVER_PORT}:8080"
+  miner:
+    image: ru/mirea/blockchain/miner
+    container_name: miner
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+    ports:
+      - "${MINER_PORT}:8080"
