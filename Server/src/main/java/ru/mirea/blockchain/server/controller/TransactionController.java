@@ -20,16 +20,22 @@ public class TransactionController {
      * Отправка сообщения в Kafka топик.
      *
      * @param transaction тело сообщения
-     * @return Mono<ResponseEntity<Void>>
+     * @return Mono<Boolean>
      */
     @PostMapping("transaction")
     public Mono<Boolean> sendTransaction(
             @RequestBody TransactionDTO transaction) {
-        return transactionService.sendMessage("transaction", transaction);
+        return transactionService.sendMessage(transaction);
     }
 
+    /**
+     * Получение сообщений из Kafka топика.
+     *
+     * @return Flux<TransactionDTO>
+     */
     @GetMapping("transaction")
-    public Flux<TransactionDTO> fetchTransaction(){
-        return Flux.empty();
+    public Flux<TransactionDTO> fetchTransaction() {
+        return transactionService.getAllTransactions();
     }
+
 }

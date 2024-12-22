@@ -52,15 +52,29 @@ services:
   kafka:
     image: confluentinc/cp-kafka:7.3.0
     container_name: kafka
-    depends_on:
-      - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
     ports:
       - "9092:9092"
+      - "9093:9093"
+    networks:
+      - app-network
+
+  rest-proxy:
+    image: confluentinc/cp-kafka-rest:7.3.0
+    container_name: rest-proxy
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_REST_HOST_NAME: rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9093
+    ports:
+      - "8082:8082"
     networks:
       - app-network
 
