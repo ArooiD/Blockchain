@@ -23,7 +23,6 @@ public class TransactionService {
             // Генерация случайной транзакции
             TransactionDTO transaction = TransactionDTO.generateRandomTransaction();
             restTemplate.postForObject(endpoint, transaction, String.class);
-            System.out.println("Transaction sent: " + transaction);
         } catch (Exception e) {
             System.err.println("Error sending transaction: " + e.getMessage());
         }
