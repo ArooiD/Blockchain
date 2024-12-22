@@ -2,6 +2,7 @@ package ru.mirea.blockchain.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.mirea.blockchain.server.dto.TransactionDTO;
 import ru.mirea.blockchain.server.service.TransactionService;
@@ -25,5 +26,10 @@ public class TransactionController {
     public Mono<Boolean> sendTransaction(
             @RequestBody TransactionDTO transaction) {
         return transactionService.sendMessage("transaction", transaction);
+    }
+
+    @GetMapping("transaction")
+    public Flux<TransactionDTO> fetchTransaction(){
+        return Flux.empty();
     }
 }

@@ -6,7 +6,6 @@
         <groupId>ru.mirea</groupId>
         <artifactId>blockchain</artifactId>
         <version>0.0.1</version>
-        <relativePath/>
     </parent>
     <groupId>ru.mirea.blockchain</groupId>
     <artifactId>Client</artifactId>
