@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/Server/pom.xml" />
         <option value="$PROJECT_DIR$/Client/pom.xml" />
         <option value="$PROJECT_DIR$/Miner/pom.xml" />
+        <option value="$PROJECT_DIR$/FullNode/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

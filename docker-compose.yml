@@ -1,83 +1,41 @@
+#name: blockchain
 services:
-  client:
-    image: ru/mirea/blockchain/client
-    container_name: client
+  eureka:
+    image: blockchain.eureka:latest
+    container_name: node_eureka
     build:
-      context: ./Client
+      context: NetworkRegistry
       dockerfile: Dockerfile
-    ports:
-      - "${CLIENT_PORT}:${CLIENT_PORT}"
-    env_file:
-      - .env
-    networks:
-      - app-network
-
-  server:
-    image: ru/mirea/blockchain/server
-    container_name: server
-    build:
-      context: ./Server
-      dockerfile: Dockerfile
-    ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
-    env_file:
-      - .env
-    networks:
-      - app-network
-
-  miner:
-    image: ru/mirea/blockchain/miner
-    container_name: miner
-    build:
-      context: ./Miner
-      dockerfile: Dockerfile
-    ports:
-      - "${MINER_PORT}:${MINER_PORT}"
-    env_file:
-      - .env
-    networks:
-      - app-network
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.0
-    container_name: zookeeper
+      target: runtime
+    env_file: .env
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+      - PORT=${REGISTRY_PORT}
+    deploy:
+      replicas: 1
+      mode: replicated
     ports:
-      - "2181:2181"
+      - 8761:8761
     networks:
-      - app-network
-
-  kafka:
-    image: confluentinc/cp-kafka:7.3.0
-    container_name: kafka
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:9093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      - net
+  full:
+    container_name: node_full
+    image: blockchain.full:latest
+    build:
+      context: FullNode
+      dockerfile: Dockerfile
+      target: runtime
     ports:
-      - "9092:9092"
-      - "9093:9093"
+      - 8000:8000
+    deploy:
+      replicas: 0
+      mode: replicated
     networks:
-      - app-network
-
-  rest-proxy:
-    image: confluentinc/cp-kafka-rest:7.3.0
-    container_name: rest-proxy
+      - net
     depends_on:
-      - kafka
-    environment:
-      KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9093
-    ports:
-      - "8082:8082"
-    networks:
-      - app-network
-
+      - eureka
 networks:
-  app-network:
-    driver: bridge
+  net:
+    external: true
+    name: blockchain
+    driver: overlay
+    attachable: true

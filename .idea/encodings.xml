@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/Client/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Client/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/FullNode/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/FullNode/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/LightNode/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MineNode/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Miner/src/main/java" charset="UTF-8" />
