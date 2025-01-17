@@ -1,0 +1,41 @@
+#name: blockchain
+services:
+  eureka:
+    image: blockchain.eureka:latest
+    container_name: node_eureka
+    build:
+      context: NetworkRegistry
+      dockerfile: Dockerfile
+      target: runtime
+    env_file: .env
+    environment:
+      - PORT=${REGISTRY_PORT}
+    deploy:
+      replicas: 1
+      mode: replicated
+    ports:
+      - 8761:8761
+    networks:
+      - net
+  full:
+    container_name: node_full
+    image: blockchain.full:latest
+    build:
+      context: FullNode
+      dockerfile: Dockerfile
+      target: runtime
+    ports:
+      - 8000:8000
+    deploy:
+      replicas: 0
+      mode: replicated
+    networks:
+      - net
+    depends_on:
+      - eureka
+networks:
+  net:
+    external: true
+    name: blockchain
+    driver: overlay
+    attachable: true
